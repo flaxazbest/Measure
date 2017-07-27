@@ -1,8 +1,7 @@
 package ua.azbest;
 
-import javafx.scene.canvas.Canvas;
-
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.Random;
 
 public class InnerFigure {
@@ -34,7 +33,8 @@ public class InnerFigure {
         hull = new ArrayList<>();
 
         int k = 0;
-        int startSegment = (random.nextInt(n));
+//        int startSegment = (random.nextInt(n));
+        int startSegment = 0;
         do {
             Line l1 = new Line(outer.get((startSegment+k)%n), outer.get((startSegment+k+1)%n));
             k++;
@@ -48,14 +48,14 @@ public class InnerFigure {
 
             Point basePoint = l1.getCrossPoint(l2);
             Line hord = new Line(t1, t2);
-            double baseDirection = hord.compare(basePoint);
+            double baseDirection = hord.lengthToPoint(basePoint);
 
             do {
                 l2 = new Line(outer.get((startSegment+k)%n), outer.get((startSegment+k+1)%n));
                 t2 = l2.getRandomPointFromSegment();
                 hord = new Line(t1, t2);
                 k++;
-            } while (isSameSign(baseDirection, hord.compare(l1.getCrossPoint(l2))) && k < n);
+            } while (isSameSign(baseDirection, hord.lengthToPoint(l1.getCrossPoint(l2))) && k < n);
 
             if (k > n) break;
             k-=2;
@@ -66,6 +66,51 @@ public class InnerFigure {
 
     private boolean isSameSign(double d1, double d2) {
         return d1*d2 >= 0;
+    }
+
+    public void printPoints() {
+        System.out.println("\n================================");
+        for (int i=0; i<hull.size(); i++) {
+            System.out.println(i);
+            int start = hull.get(i).index;
+            int end = hull.get((i+1) % hull.size()).index;
+
+            int count;
+            if (start < end)
+                count = end - start;
+            else
+                count = outer.size()-start + end;
+
+            for (int j=0; j<count; j++)
+                System.out.println("   " + outer.get( (start+1+j)%outer.size() ));
+
+        }
+    }
+
+    public Point getPointByIndex(int index) {
+        index = index % hull.size();
+        return hull.get(index).point;
+    }
+
+    public LinkedList<Point> getPointSideByHord(int index) {
+        LinkedList<Point> tmp = new LinkedList<>();
+
+        int start = hull.get(index).index;
+        int end = hull.get((index+1) % hull.size()).index;
+
+        int count;
+        if (start < end)
+            count = end - start;
+        else
+            count = outer.size()-start + end;
+
+        for (int j=0; j<count; j++)
+            tmp.add( outer.get( (start+1+j)%outer.size() ) );
+        return tmp;
+    }
+
+    public int getVertexSize() {
+        return hull.size();
     }
 
 }

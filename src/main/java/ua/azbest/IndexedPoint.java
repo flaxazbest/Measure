@@ -9,4 +9,10 @@ public class IndexedPoint {
         this.point = point;
         this.index = index;
     }
+
+    @Override
+    public String toString() {
+        return point + " - " + index;
+    }
+
 }

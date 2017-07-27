@@ -55,4 +55,10 @@ public class Point implements Comparable<Point>{
             else return -ccw(Point.this, q1, q2);     // обе сверху или снизу
         }
     }
+
+    @Override
+    public String toString() {
+        return String.format("(%.2f; %.2f)", x, y);
+    }
+
 }

@@ -3,6 +3,7 @@ package ua.azbest;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.*;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -10,6 +11,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 public class HordController {
 
@@ -24,12 +26,16 @@ public class HordController {
     private GraphicsContext gc;
 
     private ArrayList<Point> points;
+    private InnerFigure innerFigure;
 
     @FXML
     Label status;
 
     @FXML
     Canvas canvas;
+
+    @FXML
+    Button clearButton;
 
     @FXML
     Label sysInfo;
@@ -126,7 +132,6 @@ public class HordController {
 
     }
 
-
     private final double pointRadius = 5.0;
     private void drawPoint(Point p) {
         drawPoint(p, Color.RED);
@@ -142,14 +147,9 @@ public class HordController {
 
     public void testing(ActionEvent actionEvent) {
 
-        points.clear();
-        points.add(new Point(2, 1));
-        points.add(new Point(3, 1));
-        points.add(new Point(4, 3));
-        points.add(new Point(3, 5));
-        points.add(new Point(2, 4));
-        points.add(new Point(1, 2));
-        drawConvexHull();
+        innerFigure.printPoints();
+        System.out.println("FarPoint " + getPointFarresrFromHord(0));
+        System.out.println("FarPoint " + getPointFarresrFromHord(1));
 
     }
 
@@ -170,7 +170,8 @@ public class HordController {
             drawPoint(points.get(points.size() - 1));
             drawPoint(points.get(0));
 
-            drawInnerHull(InnerFigureFinder.getInnerHull(points));
+            innerFigure = new InnerFigure(points);
+            drawInnerHull(innerFigure.getPoints());
 
             //testing )))
         }
@@ -208,4 +209,32 @@ public class HordController {
 
     }
 
+    public void clearField(ActionEvent actionEvent) {
+        points.clear();
+        table.getItems().clear();
+        gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+        drawGrid();
+    }
+
+    public Point getFarrestPoint(Line hord, LinkedList<Point> setOfPoints) {
+        Point result = setOfPoints.get(0);
+        double length = Math.abs(hord.lengthToPoint(result));
+
+        for (Point a: setOfPoints) {
+            double tmp = Math.abs(hord.lengthToPoint(a));
+            if (tmp > length) {
+                length = tmp;
+                result = a;
+            }
+        }
+        return result;
+    }
+
+    public Point getPointFarresrFromHord(int index) {
+
+        Line hord = new Line(innerFigure.getPointByIndex(index), innerFigure.getPointByIndex( (index+1)%innerFigure.getVertexSize()));
+        LinkedList<Point> setOfPoints = innerFigure.getPointSideByHord(index);
+        return getFarrestPoint(hord, setOfPoints);
+
+    }
 }

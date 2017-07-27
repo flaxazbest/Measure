@@ -37,6 +37,7 @@ public class Line {
         }
     }
 
+/*
     public Point getRandomPointFromSegment() {
 
         if (this.A.getX() != this.B.getX()) {
@@ -56,8 +57,15 @@ public class Line {
             return new Point(x, y);
         }
     }
+//*/
 
-    public double compare(Point p) {
+    public Point getRandomPointFromSegment() {
+        double x = (A.getX() + B.getX()) / 2;
+        double y = (A.getY() + B.getY()) / 2;
+        return new Point(x, y);
+    }
+
+    public double lengthToPoint(Point p) {
         if (p == null)
             return 0.0;
         double result = a*p.getX() + b*p.getY() + c;
