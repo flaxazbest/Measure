@@ -39,17 +39,19 @@ public class Line {
 
     public Point getRandomPointFromSegment() {
 
-        if (A.getX() != B.getX()) {
+        if (this.A.getX() != this.B.getX()) {
             double lengthX = Math.abs(A.getX() - B.getX());
             double lengthScaledX = lengthX * (minToEndPoint - minToFirstPoint);
-            double x = A.getX() + (Math.random() * lengthScaledX) + lengthX*minToFirstPoint;
+            double x = Math.min(A.getX(), B.getX());
+            x += (Math.random() * lengthScaledX) + lengthX*minToFirstPoint;
             double y = (-c - a*x) / b;
             return new Point(x, y);
         }
         else {
             double lengthY = Math.abs(A.getY() - B.getY());
             double lengthScaledY = lengthY * (minToEndPoint - minToFirstPoint);
-            double y = A.getY() + (Math.random() * lengthScaledY) + lengthY*minToFirstPoint;
+            double y = Math.min(A.getY(), B.getY());
+            y += (Math.random() * lengthScaledY) + lengthY*minToFirstPoint;
             double x = A.getX();
             return new Point(x, y);
         }

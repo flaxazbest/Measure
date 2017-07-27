@@ -9,7 +9,8 @@ public class InnerFigureFinder {
 
     public static ArrayList<Point> getInnerHull(ArrayList<Point> points) {
         int n = points.size();
-        int startSegment = random.nextInt(n);
+//        int startSegment = random.nextInt(n);
+        int startSegment = 1;
         ArrayList<Point> hull = new ArrayList<>();
 
         Line l1 = new Line(points.get(startSegment), points.get((startSegment+1)%n));
@@ -20,7 +21,7 @@ public class InnerFigureFinder {
 
         hull.add(t1);
 
-        Point basePoint = l1.getCrossPoint(l2);
+/*        Point basePoint = l1.getCrossPoint(l2);
         Line hord = new Line(t1, t2);
 
         double baseDirection = hord.compare(basePoint);
@@ -39,7 +40,7 @@ public class InnerFigureFinder {
                 hull.add(t2);
 
             }
-        }
+        }*/
 
         return hull;
     }

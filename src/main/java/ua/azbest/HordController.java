@@ -167,7 +167,12 @@ public class HordController {
 
             Line l = new Line(points.get(0), points.get(1));
             Point t = l.getRandomPointFromSegment();
-            drawPoint(t, Color.DARKSEAGREEN);
+            //drawPoint(t, Color.DARKSEAGREEN);
+
+            ArrayList<Point> inner = InnerFigureFinder.getInnerHull(points);
+            for (Point a: inner) {
+                drawPoint(a, Color.GREENYELLOW);
+            }
 
 
         }
