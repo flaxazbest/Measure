@@ -30,7 +30,7 @@
                <children>
                   <VBox>
                      <children>
-                        <Label text="Внутрішня міра" />
+                        <Label text="%innerMeasure" />
                         <TextField fx:id="innerMeasure">
                            <font>
                               <Font size="18.0" />
@@ -84,9 +84,9 @@
                      </children>
                   </VBox>
                   <Separator prefWidth="100.0" />
-                  <ChoiceBox fx:id="figure" prefWidth="150.0" />
-                  <ComboBox fx:id="locale" prefWidth="150.0"/>
+                  <ComboBox fx:id="figure" prefWidth="150.0" />
                </children>
+               <ComboBox fx:id="comboLanguage" layoutX="3.0" layoutY="472.0" prefWidth="150.0" />
             </VBox>
          </children>
       </Pane>

@@ -2,21 +2,29 @@ package ua.azbest;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.canvas.Canvas;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.Slider;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.ComboBoxListCell;
 import javafx.scene.layout.Pane;
+import javafx.util.StringConverter;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
+import java.util.Locale;
 import java.util.Properties;
+import java.util.ResourceBundle;
 
-public class Controller {
+import static ua.azbest.locale.I18N.localeProperty;
 
+public class Controller implements Initializable {
+
+    ResourceBundle resourceBundle;
     Properties prop = null;
 
     @FXML
@@ -59,7 +67,10 @@ public class Controller {
     TextField delta;
 
     @FXML
-    ChoiceBox figure;
+    ComboBox figure;
+
+    @FXML
+    ComboBox comboLanguage;
 
     private void draw() {
 
@@ -112,6 +123,51 @@ public class Controller {
 
     public void initialize() {
 
+    }
+
+    public void pick(ActionEvent actionEvent) {
+
+        if (binder.isSelected()) {
+            double min = Math.min(sliderHeight.getValue(), sliderWidth.getValue());
+            sliderHeight.setValue(min);
+            sliderWidth.setValue(min);
+        }
+
+    }
+
+    private void setLocaleCombo() {
+        ObservableList<Locale> list = FXCollections.observableArrayList(
+                new Locale("ru", "RU"),  // Russia
+                new Locale("uk", "UA"),  // Ukraine
+                new Locale("en", "US")  // United States
+        );
+        StringConverter<Locale> converter = new StringConverter<Locale>(){
+            @Override
+            public String toString(Locale object) {
+                return String.format("%s(%s)", object.getDisplayCountry(), object.getDisplayLanguage());
+            }
+            @Override
+            public Locale fromString(String string) {
+                return null;
+            }
+        };
+        comboLanguage.getItems().addAll(list);
+        comboLanguage.setCellFactory(ComboBoxListCell.<Locale>forListView(converter));
+        comboLanguage.getSelectionModel().select(1);
+    }
+
+    private void changeLoacle(Locale newLocale) {
+        Locale.setDefault(newLocale);
+        localeProperty().set(newLocale);
+        System.out.println(newLocale);
+    }
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        this.resourceBundle = resources;
+
+        Locale.setDefault(new Locale("en"));
+
         prop = new Properties();
         String filename = "color.properties";
         try (InputStream input = App.class.getClassLoader().getResourceAsStream(filename)) {
@@ -123,6 +179,8 @@ public class Controller {
         } catch (IOException ex) {
             ex.printStackTrace();
         }
+
+        setLocaleCombo();
 
         sliderWidth.setValue(15);
         sliderHeight.setValue(15);
@@ -145,23 +203,17 @@ public class Controller {
             }
         });
 
-        figure.getItems().addAll("Круг","Ромб");
+        figure.getItems().addAll(resourceBundle.getString("figure.circle"),resourceBundle.getString("figure.rombus"));
         figure.getSelectionModel().selectFirst();
 
         figure.getSelectionModel()
                 .selectedItemProperty()
                 .addListener( (ObservableValue observable, Object oldValue, Object newValue) -> draw());
 
+        comboLanguage.getSelectionModel()
+                .selectedItemProperty()
+                .addListener( (ObservableValue observable, Object oldValue, Object newValue) -> changeLoacle((Locale) newValue));
+
         testOperation();
-    }
-
-    public void pick(ActionEvent actionEvent) {
-
-        if (binder.isSelected()) {
-            double min = Math.min(sliderHeight.getValue(), sliderWidth.getValue());
-            sliderHeight.setValue(min);
-            sliderWidth.setValue(min);
-        }
-
     }
 }

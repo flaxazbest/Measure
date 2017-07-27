@@ -6,19 +6,18 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-import java.io.InputStream;
 import java.util.Locale;
-import java.util.Properties;
 import java.util.ResourceBundle;
 
-public class App extends Application {
+public class Hord extends Application {
 
     public static void main(String[] args) {
         launch(args);
     }
 
+    @Override
     public void start(Stage primaryStage) throws Exception {
-        String fxmlFile = "../../main.fxml";
+        String fxmlFile = "../../hord.fxml";
         String styleFile = "../../style.css";
 
         ResourceBundle lngBndl = ResourceBundle
