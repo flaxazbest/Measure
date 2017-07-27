@@ -142,6 +142,13 @@ public class HordController {
 
     public void testing(ActionEvent actionEvent) {
 
+        points.clear();
+        points.add(new Point(2, 1));
+        points.add(new Point(3, 1));
+        points.add(new Point(4, 3));
+        points.add(new Point(3, 5));
+        points.add(new Point(2, 4));
+        points.add(new Point(1, 2));
         drawConvexHull();
 
     }
@@ -163,19 +170,28 @@ public class HordController {
             drawPoint(points.get(points.size() - 1));
             drawPoint(points.get(0));
 
-            //testing ))
+            drawInnerHull(InnerFigureFinder.getInnerHull(points));
 
-            Line l = new Line(points.get(0), points.get(1));
-            Point t = l.getRandomPointFromSegment();
-            //drawPoint(t, Color.DARKSEAGREEN);
+            //testing )))
+        }
+    }
 
-            ArrayList<Point> inner = InnerFigureFinder.getInnerHull(points);
-            for (Point a: inner) {
-                drawPoint(a, Color.GREENYELLOW);
-            }
+    public void drawInnerHull(ArrayList<Point> inner) {
 
+        Color color = Color.FORESTGREEN;
+
+        for (int i = 0; i < inner.size() - 1; i++) {
+
+            drawLineThrowPoints(inner.get(i), inner.get(i + 1));
+            drawPoint(inner.get(i), color);
 
         }
+
+        drawLineThrowPoints(inner.get(0), inner.get(inner.size() - 1));
+        drawPoint(inner.get(inner.size() - 1), color);
+        drawPoint(inner.get(0), color);
+
+
     }
 
     private void drawLineThrowPoints(Point p1, Point p2) {

@@ -58,6 +58,8 @@ public class Line {
     }
 
     public double compare(Point p) {
+        if (p == null)
+            return 0.0;
         double result = a*p.getX() + b*p.getY() + c;
         if (Math.abs(result) < EPS) result = 0.0;
         return result;

@@ -9,44 +9,44 @@ public class InnerFigureFinder {
 
     public static ArrayList<Point> getInnerHull(ArrayList<Point> points) {
         int n = points.size();
-//        int startSegment = random.nextInt(n);
-        int startSegment = 1;
         ArrayList<Point> hull = new ArrayList<>();
 
-        Line l1 = new Line(points.get(startSegment), points.get((startSegment+1)%n));
-        Line l2 = new Line(points.get((startSegment+1)%n), points.get((startSegment+2)%n));
+        int k = 0;
+        int startSegment = (random.nextInt(n));
+        do {
+//        int startSegment = random.nextInt(n);
 
-        Point t1 = l1.getRandomPointFromSegment();
-        Point t2 = l2.getRandomPointFromSegment();
+            Line l1 = new Line(points.get((startSegment+k)%n), points.get((startSegment+k+1)%n));
+            k++;
+            Line l2 = new Line(points.get((startSegment+k)%n), points.get((startSegment+k+1)%n));
+            k++;
 
-        hull.add(t1);
+            Point t1 = l1.getRandomPointFromSegment();
+            Point t2 = l2.getRandomPointFromSegment();
 
-/*        Point basePoint = l1.getCrossPoint(l2);
-        Line hord = new Line(t1, t2);
+            hull.add(t1);
 
-        double baseDirection = hord.compare(basePoint);
+            Point basePoint = l1.getCrossPoint(l2);
+            Line hord = new Line(t1, t2);
+            double baseDirection = hord.compare(basePoint);
 
-        int k = 2;
-
-        while (k < n) {
             do {
-                l2 = new Line(points.get((startSegment + k) % n), points.get((startSegment + k + 1) % n));
+                l2 = new Line(points.get((startSegment+k)%n), points.get((startSegment+k+1)%n));
                 t2 = l2.getRandomPointFromSegment();
                 hord = new Line(t1, t2);
                 k++;
             } while (isSameSign(baseDirection, hord.compare(l1.getCrossPoint(l2))) && k < n);
 
-            if (k < n) {
-                hull.add(t2);
+            if (k > n) break;
+            k-=2;
 
-            }
-        }*/
+        } while (k < n);
 
         return hull;
     }
 
     private static boolean isSameSign(double d1, double d2) {
-        return d1*d2 > 0;
+        return d1*d2 >= 0;
     }
 
 
