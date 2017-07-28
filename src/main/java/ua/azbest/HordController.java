@@ -24,6 +24,10 @@ public class HordController {
     private final double gridStep = 1.0;
 
     private final double DASH_LENGTH = 17;
+    private final Color colorHull = Color.RED;
+    private final Color colorInner = Color.FORESTGREEN;
+    private final Color colorOuterRectangle = Color.CHOCOLATE;
+
 
     private GraphicsContext gc;
 
@@ -140,11 +144,14 @@ public class HordController {
     }
 
     private void drawPoint(Point p, Color color) {
-        gc.setFill(Color.BLACK);
-        gc.fillOval(realToVisualX(p.getX())-pointRadius, realToVisualY(p.getY())-pointRadius, pointRadius*2, pointRadius*2);
-        gc.setFill(color);
-        gc.fillOval(realToVisualX(p.getX())-pointRadius+1, realToVisualY(p.getY())-pointRadius+1, pointRadius*2-2, pointRadius*2-2);
+        drawPoint(p, color, pointRadius);
+    }
 
+    private void drawPoint(Point p, Color color, double radius) {
+        gc.setFill(Color.BLACK);
+        gc.fillOval(realToVisualX(p.getX())-radius, realToVisualY(p.getY())-radius, radius*2, radius*2);
+        gc.setFill(color);
+        gc.fillOval(realToVisualX(p.getX())-radius+1, realToVisualY(p.getY())-radius+1, radius*2-2, radius*2-2);
     }
 
     public void testing(ActionEvent actionEvent) {
@@ -154,10 +161,24 @@ public class HordController {
         System.out.println("FarPoint " + getPointFarresrFromHord(1));
         System.out.println("FarPoint " + getPointFarresrFromHord(2));
 
-        Point far = getPointFarresrFromHord(0);
-        Line line = innerFigure.getHordByIndex(0);
-        line = line.getParallelLineThrowPoint(far);
-        drawLineThrowPoints(line.getPointA(), line.getPointB());
+        for (int i=0; i<innerFigure.getVertexSize(); i++) {
+            Point far = getPointFarresrFromHord(i);
+            Line line = innerFigure.getHordByIndex(i);
+            Rectangle r = new Rectangle(line, far);
+            drawRectangle(r);
+        }
+
+    }
+
+    private void drawRectangle(Rectangle rect) {
+        drawLineThrowPoints(rect.getBase().getPointA(), rect.getPoint1(), Color.DARKSLATEGRAY);
+        drawLineThrowPoints(rect.getBase().getPointB(), rect.getPoint2(), Color.DARKSLATEGRAY);
+        drawLineThrowPoints(rect.getPoint1(), rect.getPoint2(), Color.DARKSLATEGRAY);
+        drawPoint(rect.getPoint1(), Color.CHOCOLATE, 3);
+        drawPoint(rect.getPoint2(), Color.CHOCOLATE, 3);
+        drawPoint(rect.getBase().getPointA(), colorInner);
+        drawPoint(rect.getBase().getPointB(), colorInner);
+        drawPoint(rect.getFarrestPoint(), colorHull);
 
     }
 
@@ -175,8 +196,8 @@ public class HordController {
             }
 
             drawLineThrowPoints(points.get(0), points.get(points.size() - 1));
-            drawPoint(points.get(points.size() - 1));
-            drawPoint(points.get(0));
+            drawPoint(points.get(points.size() - 1), colorHull);
+            drawPoint(points.get(0), colorHull);
 
             innerFigure = new InnerFigure(points);
             drawInnerHull(innerFigure.getPoints());
@@ -187,34 +208,34 @@ public class HordController {
 
     public void drawInnerHull(ArrayList<Point> inner) {
 
-        Color color = Color.FORESTGREEN;
-
         for (int i = 0; i < inner.size() - 1; i++) {
 
             drawLineThrowPoints(inner.get(i), inner.get(i + 1));
-            drawPoint(inner.get(i), color);
+            drawPoint(inner.get(i), colorInner);
 
         }
 
         drawLineThrowPoints(inner.get(0), inner.get(inner.size() - 1));
-        drawPoint(inner.get(inner.size() - 1), color);
-        drawPoint(inner.get(0), color);
+        drawPoint(inner.get(inner.size() - 1), colorInner);
+        drawPoint(inner.get(0), colorInner);
 
 
     }
 
     private void drawLineThrowPoints(Point p1, Point p2) {
-
         gc.setStroke(Color.BLACK);
-        gc.setLineWidth(1.0);
+        drawLineThrowPoints(p1, p2, Color.BLACK);
+    }
 
+    private void drawLineThrowPoints(Point p1, Point p2, Color color) {
+        gc.setStroke(color);
+        gc.setLineWidth(1.0);
         gc.strokeLine(
-               realToVisualX(p1.getX()),
-               realToVisualY(p1.getY()),
+                realToVisualX(p1.getX()),
+                realToVisualY(p1.getY()),
                 realToVisualX(p2.getX()),
                 realToVisualY(p2.getY())
         );
-
     }
 
     public void clearField(ActionEvent actionEvent) {
@@ -230,10 +251,6 @@ public class HordController {
         Line hord = new Line(innerFigure.getPointByIndex(index), innerFigure.getPointByIndex( (index+1)%innerFigure.getVertexSize()));
         LinkedList<Point> setOfPoints = innerFigure.getPointSideByHord(index);
         return hord.getFarrestPoint(setOfPoints);
-    }
-
-    public void drawRectanle(Rectangle rect) {
-
     }
 
 }

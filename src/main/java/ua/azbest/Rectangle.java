@@ -31,4 +31,8 @@ public class Rectangle {
     public Point getPoint2() {
         return point2;
     }
+
+    public Point getFarrestPoint() {
+        return farrestPoint;
+    }
 }
