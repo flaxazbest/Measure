@@ -7,6 +7,7 @@ import java.util.Random;
 public class InnerFigure {
 
     private ArrayList<Point> outer;
+    private ArrayList<Line> hords;
     private ArrayList<IndexedPoint> hull;
 
     public InnerFigure(ArrayList<Point> outer) {
@@ -44,7 +45,7 @@ public class InnerFigure {
             Point t1 = l1.getRandomPointFromSegment();
             Point t2 = l2.getRandomPointFromSegment();
 
-            hull.add(new IndexedPoint(t1, (k-2)));
+            hull.add(new IndexedPoint(t1, (startSegment+k-1)));
 
             Point basePoint = l1.getCrossPoint(l2);
             Line hord = new Line(t1, t2);
@@ -61,6 +62,12 @@ public class InnerFigure {
             k-=2;
 
         } while (k < n);
+
+        int sz = hull.size();
+        hords = new ArrayList<>();
+        for (int i=0; i<sz; i++) {
+            hords.add(new Line(hull.get(i).point, hull.get((i+1)%sz).point));
+        }
 
     }
 
@@ -82,7 +89,7 @@ public class InnerFigure {
                 count = outer.size()-start + end;
 
             for (int j=0; j<count; j++)
-                System.out.println("   " + outer.get( (start+1+j)%outer.size() ));
+                System.out.println("   " + outer.get( (start+j)%outer.size() ));
 
         }
     }
@@ -90,6 +97,10 @@ public class InnerFigure {
     public Point getPointByIndex(int index) {
         index = index % hull.size();
         return hull.get(index).point;
+    }
+
+    Line getHordByIndex(int index) {
+        return hords.get(index);
     }
 
     public LinkedList<Point> getPointSideByHord(int index) {
@@ -105,7 +116,7 @@ public class InnerFigure {
             count = outer.size()-start + end;
 
         for (int j=0; j<count; j++)
-            tmp.add( outer.get( (start+1+j)%outer.size() ) );
+            tmp.add( outer.get( (start+j)%outer.size() ) );
         return tmp;
     }
 

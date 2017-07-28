@@ -3,6 +3,7 @@ package ua.azbest;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.*;
+import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
@@ -10,6 +11,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
@@ -150,6 +152,12 @@ public class HordController {
         innerFigure.printPoints();
         System.out.println("FarPoint " + getPointFarresrFromHord(0));
         System.out.println("FarPoint " + getPointFarresrFromHord(1));
+        System.out.println("FarPoint " + getPointFarresrFromHord(2));
+
+        Point far = getPointFarresrFromHord(0);
+        Line line = innerFigure.getHordByIndex(0);
+        line = line.getParallelLineThrowPoint(far);
+        drawLineThrowPoints(line.getPointA(), line.getPointB());
 
     }
 
@@ -216,25 +224,16 @@ public class HordController {
         drawGrid();
     }
 
-    public Point getFarrestPoint(Line hord, LinkedList<Point> setOfPoints) {
-        Point result = setOfPoints.get(0);
-        double length = Math.abs(hord.lengthToPoint(result));
-
-        for (Point a: setOfPoints) {
-            double tmp = Math.abs(hord.lengthToPoint(a));
-            if (tmp > length) {
-                length = tmp;
-                result = a;
-            }
-        }
-        return result;
-    }
 
     public Point getPointFarresrFromHord(int index) {
 
         Line hord = new Line(innerFigure.getPointByIndex(index), innerFigure.getPointByIndex( (index+1)%innerFigure.getVertexSize()));
         LinkedList<Point> setOfPoints = innerFigure.getPointSideByHord(index);
-        return getFarrestPoint(hord, setOfPoints);
+        return hord.getFarrestPoint(setOfPoints);
+    }
+
+    public void drawRectanle(Rectangle rect) {
 
     }
+
 }

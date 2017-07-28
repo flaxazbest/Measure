@@ -1,5 +1,7 @@
 package ua.azbest;
 
+import java.util.LinkedList;
+
 public class Line {
 
     public static final double EPS = 1e-7;
@@ -73,6 +75,57 @@ public class Line {
         return result;
     }
 
+    public Point getFarrestPoint(LinkedList<Point> setOfPoints) {
+        Point result = setOfPoints.get(0);
+        double length = Math.abs(this.lengthToPoint(result));
+
+        for (Point a: setOfPoints) {
+            double tmp = Math.abs(this.lengthToPoint(a));
+            if (tmp > length) {
+                length = tmp;
+                result = a;
+            }
+        }
+        return result;
+    }
+
+    public Line getParallelLineThrowPoint(Point p) {
+
+        double cc = -(a*p.getX() + b*p.getY());
+        Line result = new Line(a, b, cc);
+        result.A = p;
+
+        Point second;
+        if (b != 0) {
+            double yy = (-cc -a*(p.getX() + 5)) / b;
+            second = new Point(p.getX()+5, yy);
+        } else {
+            second = new Point(p.getX(), p.getY()+5);
+        }
+        result.B = second;
+
+        return result;
+    }
+
+    public Line getPerpendicularThrowPoint(Point p) {
+
+        double newA = -b;
+        double newB = a;
+        double newC = -(newA*p.getX() + newB*p.getY());
+        Line result = new Line(newA, newB, newC);
+
+        result.A = p;
+        Point second;
+        if (newB!=0) {
+            double yy = (-newC -newA*(p.getX() + 5)) / newB;
+            second = new Point(p.getX()+5, yy);
+        } else {
+            second = new Point(p.getX(), p.getY()+5);
+        }
+        result.B = second;
+        return result;
+    }
+
     public double getA() {
         return a;
     }
@@ -84,4 +137,19 @@ public class Line {
     public double getC() {
         return c;
     }
+
+    private Line(double a, double b, double c) {
+        this.a = a;
+        this.b = b;
+        this.c = c;
+    }
+
+    public Point getPointA() {
+        return this.A;
+    }
+
+    public Point getPointB() {
+        return this.B;
+    }
+
 }
