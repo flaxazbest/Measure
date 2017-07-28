@@ -31,7 +31,7 @@ public class HordController {
 
     private GraphicsContext gc;
 
-    private ArrayList<Point> points;
+    private ArrayList<IndexedPoint> points;
     private InnerFigure innerFigure;
 
     @FXML
@@ -127,14 +127,14 @@ public class HordController {
 
         Point p = new Point(visualToRealX(mouseEvent.getX()), visualToRealY(mouseEvent.getY()));
         drawPoint(p);
-        points.add(p);
+        points.add(new IndexedPoint(p, points.size()-1));
         if (points.size() > 3) {
             points = Graham.getConvexHull(points);
         }
         drawConvexHull();
         table.getItems().clear();
-        for (Point pt: points)
-            table.getItems().add(pt);
+        for (IndexedPoint pt: points)
+            table.getItems().add(pt.point);
 
     }
 
@@ -153,6 +153,22 @@ public class HordController {
         gc.setFill(color);
         gc.fillOval(realToVisualX(p.getX())-radius+1, realToVisualY(p.getY())-radius+1, radius*2-2, radius*2-2);
     }
+
+    private void drawPoint(IndexedPoint p) {
+        drawPoint(p, Color.RED);
+    }
+
+    private void drawPoint(IndexedPoint p, Color color) {
+        drawPoint(p, color, pointRadius);
+    }
+
+    private void drawPoint(IndexedPoint p, Color color, double radius) {
+        gc.setFill(Color.BLACK);
+        gc.fillOval(realToVisualX(p.point.getX())-radius, realToVisualY(p.point.getY())-radius, radius*2, radius*2);
+        gc.setFill(color);
+        gc.fillOval(realToVisualX(p.point.getX())-radius+1, realToVisualY(p.point.getY())-radius+1, radius*2-2, radius*2-2);
+    }
+
 
     public void testing(ActionEvent actionEvent) {
 
@@ -191,13 +207,13 @@ public class HordController {
             for (int i = 0; i < points.size() - 1; i++) {
 
                 drawLineThrowPoints(points.get(i), points.get(i + 1));
-                drawPoint(points.get(i));
+                drawPoint(points.get(i).point);
 
             }
 
             drawLineThrowPoints(points.get(0), points.get(points.size() - 1));
-            drawPoint(points.get(points.size() - 1), colorHull);
-            drawPoint(points.get(0), colorHull);
+            drawPoint(points.get(points.size() - 1).point, colorHull);
+            drawPoint(points.get(0).point, colorHull);
 
             innerFigure = new InnerFigure(points);
             drawInnerHull(innerFigure.getPoints());
@@ -206,7 +222,7 @@ public class HordController {
         }
     }
 
-    public void drawInnerHull(ArrayList<Point> inner) {
+    public void drawInnerHull(ArrayList<IndexedPoint> inner) {
 
         for (int i = 0; i < inner.size() - 1; i++) {
 
@@ -222,9 +238,9 @@ public class HordController {
 
     }
 
-    private void drawLineThrowPoints(Point p1, Point p2) {
+    private void drawLineThrowPoints(IndexedPoint p1, IndexedPoint p2) {
         gc.setStroke(Color.BLACK);
-        drawLineThrowPoints(p1, p2, Color.BLACK);
+        drawLineThrowPoints(p1.point, p2.point, Color.BLACK);
     }
 
     private void drawLineThrowPoints(Point p1, Point p2, Color color) {
