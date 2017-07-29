@@ -54,6 +54,22 @@ public class Line {
         }
     }
 
+    public boolean isPointsBetween(Point p1, Point p2) {
+
+        Line perpendicular1 = this.getPerpendicularThrowPoint(this.A);
+        Line perpendicular2 = this.getPerpendicularThrowPoint(this.B);
+
+        double d01 = perpendicular1.lengthToPoint(this.B);
+        double d11 = perpendicular1.lengthToPoint(p1);
+        double d21 = perpendicular1.lengthToPoint(p2);
+
+        double d02 = perpendicular2.lengthToPoint(this.A);
+        double d12 = perpendicular2.lengthToPoint(p1);
+        double d22 = perpendicular2.lengthToPoint(p2);
+
+        return (d01 * d11 >= 0) && (d01 * d21 >= 0) && (d02 * d12 >= 0) && (d02 * d22 >= 0);
+    }
+
 /*
     public Point getRandomPointFromSegment() {
 

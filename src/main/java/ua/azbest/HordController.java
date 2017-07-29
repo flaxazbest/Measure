@@ -173,12 +173,17 @@ public class HordController {
     public void testing(ActionEvent actionEvent) {
 
         points.clear();
-        points.add(new IndexedPoint(new Point(4,1), 0));
+/*        points.add(new IndexedPoint(new Point(4,1), 0));
         points.add(new IndexedPoint(new Point(6,1), 1));
         points.add(new IndexedPoint(new Point(7,3), 2));
         points.add(new IndexedPoint(new Point(6,5), 3));
         points.add(new IndexedPoint(new Point(4,4), 4));
-        points.add(new IndexedPoint(new Point(3,2.5), 5));
+        points.add(new IndexedPoint(new Point(3,2.5), 5));*/
+
+        points.add(new IndexedPoint(new Point(1,5), 0));
+        points.add(new IndexedPoint(new Point(4,9), 1));
+        points.add(new IndexedPoint(new Point(9,3), 2));
+        points.add(new IndexedPoint(new Point(4,0), 3));
 
         drawConvexHull();
 
@@ -221,6 +226,9 @@ public class HordController {
     }
 
     public void drawInnerHull(ArrayList<IndexedPoint> inner) {
+
+        if (inner == null)
+            return;
 
         for (int i = 0; i < inner.size() - 1; i++) {
 

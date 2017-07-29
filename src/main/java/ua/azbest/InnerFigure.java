@@ -12,7 +12,7 @@ public class InnerFigure {
 
     public InnerFigure(ArrayList<IndexedPoint> outer) {
         this.outer = outer;
-        getInnerFigure();
+        this.hull = getInnerFigure();
     }
 
     public void addVertex(Point p, Integer index) {
@@ -23,22 +23,35 @@ public class InnerFigure {
         return hull;
     }
 
-    private void getInnerFigure() {
+    private ArrayList<IndexedPoint> getInnerFigure() {
         Random random = new Random();
+        ArrayList<IndexedPoint> result = null;
 
         int n = outer.size();
-        hull = new ArrayList<>();
-
-        int k = 0;
-//        int startSegment = (random.nextInt(n));
+        if (n < 4) return result;
+        result = new ArrayList<>();
+        //int startIndex = (random.nextInt(n));
         int startIndex = 0;
         int currentIndex = startIndex;
         startIndex += n;
 
-        hull.add(outer.get(currentIndex));
+        do {
+            result.add(outer.get(currentIndex));
+            IndexedPoint currentPoint = outer.get(currentIndex++);
 
-
+            Line hord;
+            do {
+                try {
+                    hord = new Line(currentPoint.point, outer.get((++currentIndex + 1) % n).point);
+                } catch (IllegalArgumentException e) {
+                    break;
+                }
+            }
+            while (hord.isPointsBetween(outer.get((currentPoint.index + 1) % n).point, outer.get((currentIndex) % n).point));
+        } while (currentIndex < startIndex);
+        return result;
     }
+
 
     private boolean isSameSign(double d1, double d2) {
         return d1*d2 >= 0;
