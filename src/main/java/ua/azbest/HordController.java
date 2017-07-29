@@ -4,10 +4,10 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.*;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 
@@ -33,6 +33,8 @@ public class HordController {
 
     private ArrayList<IndexedPoint> points;
     private InnerFigure innerFigure;
+    private double outS = 0.0;
+    private double inS = 0.0;
 
     @FXML
     Label status;
@@ -55,6 +57,18 @@ public class HordController {
     @FXML
     TableView<Point> table;
 
+    @FXML
+    TextField square;
+
+    @FXML
+    TextField outerSquare;
+
+    @FXML
+    TextField innerSquare;
+
+    @FXML
+    TextField difference;
+
     public void MouseMove(MouseEvent mouseEvent) {
 
 //        double canvasHeight = ((Canvas)(mouseEvent.getSource())).getHeight();
@@ -74,6 +88,8 @@ public class HordController {
     }
 
     private void drawGrid() {
+
+        gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
 
         gc.setStroke(Color.BLACK);
         gc.setLineWidth(2.0);
@@ -137,11 +153,24 @@ public class HordController {
         for (IndexedPoint pt: points)
             table.getItems().add(pt.point);
 
-        drawConvexHull();
-
+        drawGrid();
+        drawInnerTriangles();
         drawOutRectangles();
-
+        drawConvexHull();
         drawInnerHull(innerFigure.getPoints());
+
+        double s = Square.getSquareHull(points);
+        square.setText(String.format("%.4f", s));
+
+        double innerS = Square.getSquareHull(innerFigure.getPoints());
+
+        inS += innerS;
+        innerSquare.setText(String.format("%.4f", inS));
+
+        outS += innerS;
+        outerSquare.setText(String.format("%.4f", outS));
+
+        difference.setText(String.format("%.4f", outS-inS));
     }
 
     private final double pointRadius = 5.0;
@@ -186,13 +215,40 @@ public class HordController {
         points.add(new IndexedPoint(new Point(4,4), 4));
         points.add(new IndexedPoint(new Point(3,2.5), 5));*/
 
-        points.add(new IndexedPoint(new Point(1,5), 0));
-        points.add(new IndexedPoint(new Point(4,9), 1));
-        points.add(new IndexedPoint(new Point(9,3), 2));
-        points.add(new IndexedPoint(new Point(4,0), 3));
+        points.add(new IndexedPoint(new Point(1,3), 0));
+        points.add(new IndexedPoint(new Point(4,5), 1));
+        points.add(new IndexedPoint(new Point(5,3), 2));
+        points.add(new IndexedPoint(new Point(2,0), 3));
 
+        innerFigure = new InnerFigure(points);
+
+        table.getItems().clear();
+        for (IndexedPoint pt: points)
+            table.getItems().add(pt.point);
+
+        drawGrid();
+        drawInnerTriangles();
+        drawOutRectangles();
         drawConvexHull();
+        drawInnerHull(innerFigure.getPoints());
 
+        double s = Square.getSquareHull(points);
+        square.setText(String.format("%.4f", s));
+
+        double innerS = Square.getSquareHull(innerFigure.getPoints());
+
+        inS += innerS;
+        innerSquare.setText(String.format("%.4f", inS));
+
+        outS += innerS;
+        outerSquare.setText(String.format("%.4f", outS));
+
+        difference.setText(String.format("%.4f", outS-inS));
+    }
+
+    private void drawTriangle(Line base, Point vertex) {
+        drawLineThrowPoints(base.getPointA(), vertex, Color.ORANGE);
+        drawLineThrowPoints(base.getPointB(), vertex, Color.ORANGE);
     }
 
     private void drawRectangle(Rectangle rect) {
@@ -204,26 +260,22 @@ public class HordController {
         drawPoint(rect.getBase().getPointA(), colorInner);
         drawPoint(rect.getBase().getPointB(), colorInner);
         drawPoint(rect.getFarrestPoint(), colorHull);
-
     }
 
     private void drawConvexHull() {
         if (points.size() > 2) {
-
-            gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
-            drawGrid();
-
             for (int i = 0; i < points.size() - 1; i++) {
-
                 drawLineThrowPoints(points.get(i), points.get(i + 1));
                 drawPoint(points.get(i).point);
-
             }
 
             drawLineThrowPoints(points.get(0), points.get(points.size() - 1));
             drawPoint(points.get(points.size() - 1).point, colorHull);
             drawPoint(points.get(0).point, colorHull);
-            //testing )))
+        } else {
+            for (int i=0; i<points.size(); i++){
+                drawPoint(points.get(i).point, colorHull);
+            }
         }
     }
 
@@ -236,13 +288,11 @@ public class HordController {
 
             drawLineThrowPoints(inner.get(i), inner.get(i + 1));
             drawPoint(inner.get(i), colorInner);
-
         }
 
         drawLineThrowPoints(inner.get(0), inner.get(inner.size() - 1));
         drawPoint(inner.get(inner.size() - 1), colorInner);
         drawPoint(inner.get(0), colorInner);
-
 
     }
 
@@ -269,18 +319,31 @@ public class HordController {
         drawGrid();
     }
 
-
     public Point getPointFarresrFromHord(int index) {
 
         Line hord = new Line(innerFigure.getPointByIndex(index), innerFigure.getPointByIndex( (index+1)%innerFigure.getVertexSize()));
         LinkedList<Point> setOfPoints = innerFigure.getPointSideByHord(index);
         return hord.getFarrestPoint(setOfPoints);
     }
+
+    public void drawInnerTriangles() {
+        int n = innerFigure.getHordsCount();
+        inS = 0.0;
+        for (int i=0; i<n; i++) {
+            drawTriangle(innerFigure.getHordByIndex(i), getPointFarresrFromHord(i));
+            inS += Square.getSqyareBy3Points(innerFigure.getHordByIndex(i).getPointA(),
+                                             innerFigure.getHordByIndex(i).getPointB(),
+                                             getPointFarresrFromHord(i));
+        }
+    }
+
     public void drawOutRectangles() {
         int n = innerFigure.getHordsCount();
+        outS = 0.0;
         for (int i=0; i<n; i++) {
             Line hord = innerFigure.getHordByIndex(i);
             Rectangle rect = new Rectangle(hord, getPointFarresrFromHord(i));
+            outS += rect.getSquare();
             drawRectangle(rect);
         }
      }

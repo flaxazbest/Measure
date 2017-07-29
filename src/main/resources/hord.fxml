@@ -7,20 +7,21 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<?import javafx.scene.control.cell.PropertyValueFactory?>
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="650.0" prefWidth="834.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ua.azbest.HordController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="650.0" prefWidth="834.0" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ua.azbest.HordController">
    <center>
       <AnchorPane BorderPane.alignment="CENTER">
          <BorderPane.margin>
             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
          </BorderPane.margin>
          <children>
-               <Canvas fx:id="canvas" height="630" onMouseClicked="#MouseClicked"  onMouseMoved="#MouseMove" width="650">
+               <Canvas fx:id="canvas" height="630" onMouseClicked="#MouseClicked" onMouseMoved="#MouseMove" width="650">
                <cursor>
                   <Cursor fx:constant="CROSSHAIR" />
                </cursor>
@@ -33,19 +34,19 @@
          <children>
             <VBox layoutX="8.0" layoutY="7.0" prefHeight="400.0" prefWidth="150.0">
                <children>
-                  <TableView  prefHeight="400.0" prefWidth="100.0" fx:id="table">
+                  <TableView fx:id="table" prefHeight="400.0" prefWidth="100.0">
                     <columns>
-                        <TableColumn prefWidth="75.0" text="X" fx:id="columnX">
+                        <TableColumn fx:id="columnX" prefWidth="75.0" text="X">
                             <cellValueFactory><PropertyValueFactory property="X" />
                             </cellValueFactory>
                         </TableColumn>
-                      <TableColumn prefWidth="75.0" text="Y" fx:id="columnY">
+                      <TableColumn fx:id="columnY" prefWidth="75.0" text="Y">
                           <cellValueFactory><PropertyValueFactory property="Y" />
                           </cellValueFactory>
                       </TableColumn>
                     </columns>
                   </TableView>
-                  <Button fx:id="test" onAction="#testing" contentDisplay="CENTER" maxWidth="200.0" minWidth="100.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="150.0" text="Button">
+                  <Button fx:id="test" contentDisplay="CENTER" maxWidth="200.0" minWidth="100.0" mnemonicParsing="false" onAction="#testing" prefHeight="25.0" prefWidth="150.0" text="Button">
                      <opaqueInsets>
                         <Insets top="5.0" />
                      </opaqueInsets>
@@ -53,7 +54,7 @@
                         <Insets top="5.0" />
                      </VBox.margin>
                   </Button>
-                  <Button fx:id="clearButton" onAction="#clearField" maxWidth="200.0" minWidth="100.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="150.0" text="Clear">
+                  <Button fx:id="clearButton" maxWidth="200.0" minWidth="100.0" mnemonicParsing="false" onAction="#clearField" prefHeight="25.0" prefWidth="150.0" text="Clear">
                      <opaqueInsets>
                         <Insets top="5.0" />
                      </opaqueInsets>
@@ -61,6 +62,38 @@
                         <Insets top="5.0" />
                      </VBox.margin>
                   </Button>
+                  <TextField fx:id="square">
+                     <opaqueInsets>
+                        <Insets top="5.0" />
+                     </opaqueInsets>
+                     <VBox.margin>
+                        <Insets top="5.0" />
+                     </VBox.margin>
+                  </TextField>
+                   <TextField fx:id="innerSquare">
+                       <opaqueInsets>
+                           <Insets top="5.0" />
+                       </opaqueInsets>
+                     <VBox.margin>
+                        <Insets top="5.0" />
+                     </VBox.margin>
+                   </TextField>
+                   <TextField fx:id="outerSquare">
+                       <opaqueInsets>
+                           <Insets top="5.0" />
+                       </opaqueInsets>
+                     <VBox.margin>
+                        <Insets top="5.0" />
+                     </VBox.margin>
+                   </TextField>
+                   <TextField fx:id="difference">
+                       <opaqueInsets>
+                           <Insets top="5.0" />
+                       </opaqueInsets>
+                       <VBox.margin>
+                           <Insets top="5.0" />
+                       </VBox.margin>
+                   </TextField>
                </children>
             </VBox>
          </children>

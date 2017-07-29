@@ -53,10 +53,8 @@ public class InnerFigure {
         for (int i=0; i<result.size(); i++) {
             hords.add(new Line(result.get(i).point, result.get((i+1)%result.size()).point));
         }
-
         return result;
     }
-
 
     private boolean isSameSign(double d1, double d2) {
         return d1*d2 >= 0;
@@ -77,7 +75,6 @@ public class InnerFigure {
 
             for (int j=0; j<count; j++)
                 System.out.println("   " + outer.get( (start+j)%outer.size() ));
-
         }
     }
 

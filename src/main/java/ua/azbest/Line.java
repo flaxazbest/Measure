@@ -120,6 +120,10 @@ public class Line {
         return result;
     }
 
+    public double getLength() {
+        return Math.sqrt(Math.pow(A.getX()-B.getX(),2) + Math.pow(A.getY()-B.getY(),2));
+    }
+
     public Line getParallelLineThrowPoint(Point p) {
 
         double cc = -(a*p.getX() + b*p.getY());

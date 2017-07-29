@@ -35,4 +35,9 @@ public class Rectangle {
     public Point getFarrestPoint() {
         return farrestPoint;
     }
+
+    public double getSquare() {
+        double h = Math.abs(base.lengthToPoint(farrestPoint)) / Math.sqrt( base.getA()*base.getA() + base.getB()*base.getB() );
+        return Math.abs(base.getLength() * h);
+    }
 }
