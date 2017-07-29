@@ -34,24 +34,9 @@ public class InnerFigure {
         int startIndex = 0;
         int currentIndex = startIndex;
         startIndex += n;
-        do {
 
-            hull.add(outer.get(currentIndex));
-            Line definer = new Line(outer.get(currentIndex++ % n).point, outer.get((currentIndex) % n).point);
-            Line grader = definer.getParallelLineThrowPoint(outer.get((currentIndex+1) % n).point);
-            double side = grader.lengthToPoint(outer.get((currentIndex) % n).point);
+        hull.add(outer.get(currentIndex));
 
-            double ss = 0;
-
-            do {
-                currentIndex++;
-                grader = definer.getParallelLineThrowPoint(outer.get((currentIndex+1) % n).point);
-                ss =  grader.lengthToPoint(outer.get((currentIndex) % n).point);
-            }
-            while (isSameSign(side, grader.lengthToPoint(outer.get((currentIndex) % n).point)));
-
-            System.out.println(ss);
-        } while (currentIndex < startIndex);
 
     }
 
