@@ -15,8 +15,23 @@ public class Line {
     private double a, b, c;
 
     public Line(Point a, Point b) {
-        this.A = a;
-        this.B = b;
+
+        if (a.getX() < b.getX()) {
+            this.A = a;
+            this.B = b;
+        } else if (a.getX() > b.getX()) {
+            this.A = b;
+            this.B = a;
+        } else {
+            if (a.getY() < b.getY()) {
+                this.A = a;
+                this.B = b;
+            } else if (a.getY() > b.getY()) {
+                this.A = b;
+                this.B = a;
+            } else
+                throw new IllegalArgumentException("Same points");
+        }
 
         this.a = b.getY() - a.getY();
         this.b = - (b.getX() - a.getX());

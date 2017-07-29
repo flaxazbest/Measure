@@ -5,20 +5,21 @@ import java.util.Arrays;
 
 public class Graham {
 
-    private static ArrayList<Point> hull;
+    private static ArrayList<IndexedPoint> hull;
 
-    public static ArrayList<Point> getConvexHull(ArrayList<Point> pts) {
+    public static ArrayList<IndexedPoint> getConvexHull(ArrayList<IndexedPoint> pts) {
         hull = new ArrayList<>();
 
         int n = pts.size();
         Point[] points = new Point[n];
         for (int i = 0; i < n; i++) {
-            points[i] = pts.get(i);
+            points[i] = pts.get(i).point;
         }
         Arrays.sort(points);
         Arrays.sort(points, 1, n, points[0].polarOrder());
 
-        hull.add(points[0]);       // p[0] стартова точка
+        int index = 0;
+        hull.add(new IndexedPoint(points[index], index));       // p[0] стартова точка
 
         int k1;
         for (k1 = 1; k1 < n; k1++)
@@ -28,17 +29,21 @@ public class Graham {
         int k2;
         for (k2 = k1 + 1; k2 < n; k2++)
             if (Point.ccw(points[0], points[k1], points[k2]) != 0) break;
-        hull.add(points[k2 - 1]);
+        hull.add(new IndexedPoint(points[k2 - 1], 0 ));
 
         // алгоритм Грэхема
         for (int i = k2; i < n; i++) {
-            Point top = hull.remove(hull.size()-1);
-            while (Point.ccw(hull.get(hull.size()-1), top, points[i]) <= 0) {
-                top = hull.remove(hull.size()-1);
+            Point top = hull.remove(hull.size()-1).point;
+            while (Point.ccw(hull.get(hull.size()-1).point, top, points[i]) <= 0) {
+                top = hull.remove(hull.size()-1).point;
             }
-            hull.add(top);
-            hull.add(points[i]);
+            hull.add(new IndexedPoint(top, 0));
+            hull.add(new IndexedPoint(points[i], 0));
         }
+
+        for (int i=0; i<hull.size(); i++)
+            hull.get(i).setIndex(i);
+
         return hull;
         //assert isConvex();
     }

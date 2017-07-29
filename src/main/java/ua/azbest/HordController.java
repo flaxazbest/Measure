@@ -172,17 +172,15 @@ public class HordController {
 
     public void testing(ActionEvent actionEvent) {
 
-        innerFigure.printPoints();
-        System.out.println("FarPoint " + getPointFarresrFromHord(0));
-        System.out.println("FarPoint " + getPointFarresrFromHord(1));
-        System.out.println("FarPoint " + getPointFarresrFromHord(2));
+        points.clear();
+        points.add(new IndexedPoint(new Point(4,1), 0));
+        points.add(new IndexedPoint(new Point(6,1), 1));
+        points.add(new IndexedPoint(new Point(7,3), 2));
+        points.add(new IndexedPoint(new Point(6,5), 3));
+        points.add(new IndexedPoint(new Point(4,4), 4));
+        points.add(new IndexedPoint(new Point(3,2.5), 5));
 
-        for (int i=0; i<innerFigure.getVertexSize(); i++) {
-            Point far = getPointFarresrFromHord(i);
-            Line line = innerFigure.getHordByIndex(i);
-            Rectangle r = new Rectangle(line, far);
-            drawRectangle(r);
-        }
+        drawConvexHull();
 
     }
 

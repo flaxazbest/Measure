@@ -6,11 +6,11 @@ import java.util.Random;
 
 public class InnerFigure {
 
-    private ArrayList<Point> outer;
+    private ArrayList<IndexedPoint> outer;
     private ArrayList<Line> hords;
     private ArrayList<IndexedPoint> hull;
 
-    public InnerFigure(ArrayList<Point> outer) {
+    public InnerFigure(ArrayList<IndexedPoint> outer) {
         this.outer = outer;
         getInnerFigure();
     }
@@ -19,12 +19,8 @@ public class InnerFigure {
         hull.add(new IndexedPoint(p, index));
     }
 
-    public ArrayList<Point> getPoints() {
-
-        ArrayList<Point> result = new ArrayList<>();
-        for (IndexedPoint indexedPoint: hull)
-            result.add(indexedPoint.point);
-        return result;
+    public ArrayList<IndexedPoint> getPoints() {
+        return hull;
     }
 
     private void getInnerFigure() {
@@ -35,39 +31,27 @@ public class InnerFigure {
 
         int k = 0;
 //        int startSegment = (random.nextInt(n));
-        int startSegment = 0;
+        int startIndex = 0;
+        int currentIndex = startIndex;
+        startIndex += n;
         do {
-            Line l1 = new Line(outer.get((startSegment+k)%n), outer.get((startSegment+k+1)%n));
-            k++;
-            Line l2 = new Line(outer.get((startSegment+k)%n), outer.get((startSegment+k+1)%n));
-            k++;
 
-            Point t1 = l1.getRandomPointFromSegment();
-            Point t2 = l2.getRandomPointFromSegment();
+            hull.add(outer.get(currentIndex));
+            Line definer = new Line(outer.get(currentIndex++ % n).point, outer.get((currentIndex) % n).point);
+            Line grader = definer.getParallelLineThrowPoint(outer.get((currentIndex+1) % n).point);
+            double side = grader.lengthToPoint(outer.get((currentIndex) % n).point);
 
-            hull.add(new IndexedPoint(t1, (startSegment+k-1)));
-
-            Point basePoint = l1.getCrossPoint(l2);
-            Line hord = new Line(t1, t2);
-            double baseDirection = hord.lengthToPoint(basePoint);
+            double ss = 0;
 
             do {
-                l2 = new Line(outer.get((startSegment+k)%n), outer.get((startSegment+k+1)%n));
-                t2 = l2.getRandomPointFromSegment();
-                hord = new Line(t1, t2);
-                k++;
-            } while (isSameSign(baseDirection, hord.lengthToPoint(l1.getCrossPoint(l2))) && k < n);
+                currentIndex++;
+                grader = definer.getParallelLineThrowPoint(outer.get((currentIndex+1) % n).point);
+                ss =  grader.lengthToPoint(outer.get((currentIndex) % n).point);
+            }
+            while (isSameSign(side, grader.lengthToPoint(outer.get((currentIndex) % n).point)));
 
-            if (k > n) break;
-            k-=2;
-
-        } while (k < n);
-
-        int sz = hull.size();
-        hords = new ArrayList<>();
-        for (int i=0; i<sz; i++) {
-            hords.add(new Line(hull.get(i).point, hull.get((i+1)%sz).point));
-        }
+            System.out.println(ss);
+        } while (currentIndex < startIndex);
 
     }
 
@@ -116,7 +100,7 @@ public class InnerFigure {
             count = outer.size()-start + end;
 
         for (int j=0; j<count; j++)
-            tmp.add( outer.get( (start+j)%outer.size() ) );
+            tmp.add( outer.get( (start+j)%outer.size() ).point );
         return tmp;
     }
 

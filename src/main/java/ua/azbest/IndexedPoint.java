@@ -15,4 +15,7 @@ public class IndexedPoint {
         return point + " - " + index;
     }
 
+    public void setIndex(int index) {
+        this.index = index;
+    }
 }
