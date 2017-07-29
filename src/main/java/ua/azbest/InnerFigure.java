@@ -38,7 +38,6 @@ public class InnerFigure {
         do {
             result.add(outer.get(currentIndex));
             IndexedPoint currentPoint = outer.get(currentIndex++);
-
             Line hord;
             do {
                 try {
@@ -49,6 +48,12 @@ public class InnerFigure {
             }
             while (hord.isPointsBetween(outer.get((currentPoint.index + 1) % n).point, outer.get((currentIndex) % n).point));
         } while (currentIndex < startIndex);
+
+        hords = new ArrayList<>();
+        for (int i=0; i<result.size(); i++) {
+            hords.add(new Line(result.get(i).point, result.get((i+1)%result.size()).point));
+        }
+
         return result;
     }
 
@@ -104,6 +109,12 @@ public class InnerFigure {
 
     public int getVertexSize() {
         return hull.size();
+    }
+
+    public int getHordsCount() {
+        if (hords == null)
+            return 0;
+        return hords.size();
     }
 
 }

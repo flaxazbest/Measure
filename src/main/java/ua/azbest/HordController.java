@@ -127,15 +127,21 @@ public class HordController {
 
         Point p = new Point(visualToRealX(mouseEvent.getX()), visualToRealY(mouseEvent.getY()));
         drawPoint(p);
-        points.add(new IndexedPoint(p, points.size()-1));
+        points.add(new IndexedPoint(p, points.size()));
         if (points.size() > 3) {
             points = Graham.getConvexHull(points);
         }
-        drawConvexHull();
+        innerFigure = new InnerFigure(points);
+
         table.getItems().clear();
         for (IndexedPoint pt: points)
             table.getItems().add(pt.point);
 
+        drawConvexHull();
+
+        drawOutRectangles();
+
+        drawInnerHull(innerFigure.getPoints());
     }
 
     private final double pointRadius = 5.0;
@@ -217,10 +223,6 @@ public class HordController {
             drawLineThrowPoints(points.get(0), points.get(points.size() - 1));
             drawPoint(points.get(points.size() - 1).point, colorHull);
             drawPoint(points.get(0).point, colorHull);
-
-            innerFigure = new InnerFigure(points);
-            drawInnerHull(innerFigure.getPoints());
-
             //testing )))
         }
     }
@@ -274,5 +276,13 @@ public class HordController {
         LinkedList<Point> setOfPoints = innerFigure.getPointSideByHord(index);
         return hord.getFarrestPoint(setOfPoints);
     }
+    public void drawOutRectangles() {
+        int n = innerFigure.getHordsCount();
+        for (int i=0; i<n; i++) {
+            Line hord = innerFigure.getHordByIndex(i);
+            Rectangle rect = new Rectangle(hord, getPointFarresrFromHord(i));
+            drawRectangle(rect);
+        }
+     }
 
 }
