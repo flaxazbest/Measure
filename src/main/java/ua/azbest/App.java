@@ -33,5 +33,6 @@ public class App extends Application {
         primaryStage.setScene(scene);
         scene.getStylesheets().add(App.class.getResource(styleFile).toExternalForm());
         primaryStage.show();
+        // delete this line :)
     }
 }
